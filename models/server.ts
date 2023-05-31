@@ -8,7 +8,7 @@ class Server {
     private app: Application;
     private port: string;
     private apiPaths = {
-        home: '/api/v1/'
+        home: '/api/v1'
     };
 
     constructor() {
@@ -16,6 +16,7 @@ class Server {
         this.port = process.env.PORT || '8080';
 
         this.middleware();
+        this.routes();
     }
 
     middleware(): void {

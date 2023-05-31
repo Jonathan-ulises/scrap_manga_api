@@ -1,11 +1,8 @@
 import { Router } from 'express';
+import { getRecentManga } from '../controllers/home.controller';
 
 const router = Router();
 
-router.get('/',  (req, res) => {
-    res.json({
-        msg: 'Corriendo ruta principal'
-    })
-})
+router.get('/', getRecentManga)
 
 export default router;
