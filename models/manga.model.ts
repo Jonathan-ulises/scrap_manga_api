@@ -7,17 +7,14 @@ export interface Manga {
     mid: string | number,
     title: string,
     cover: string,
-    infoPage: string,
+    infoPage?: string,
+    numPages?: number,
+    author?: string,
+    description?: string
+    genres?: string | string[]
 }
 
-/**
- * Interface to create Manga objects to more information.
- */
-export interface DetailManga {
-    mid: string | number,
-    title: string,
-    cover: string,
-    author: string,
-    genre: string,
-    numPages: string,
+export interface MangaPage {
+    num: number,
+    srcImage: string
 }

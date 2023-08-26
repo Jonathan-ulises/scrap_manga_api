@@ -1,14 +1,14 @@
 import express, { Application } from "express";
 
 // Routes
-import homeRoute from '../routes/home.routes';
+import homeRoute from '../routes/otome.routes';
 
 class Server {
 
     private app: Application;
     private port: string;
     private apiPaths = {
-        home: '/api/v1'
+        otome: '/api/v1/otome' // TMOHentai
     };
 
     constructor() {
@@ -24,7 +24,7 @@ class Server {
     }
 
     routes(): void {
-        this.app.use( this.apiPaths.home, homeRoute )
+        this.app.use( this.apiPaths.otome, homeRoute )
     }
 
     listen(): void {
