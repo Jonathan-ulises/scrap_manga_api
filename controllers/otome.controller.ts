@@ -33,6 +33,11 @@ export const getRecentManga = async(req: Request, res: Response) => {
       ok: true,
       result: listM
     })
+  } else {
+    res.status(500).json({
+      ok: false,
+      result: `Error con consulta en ${URL}`
+    })
   }
 }
 
