@@ -5,9 +5,11 @@ import { Manga, MangaPage } from "../models/manga.model";
 import { SearchLinkParams } from '../models/link.model';
 import { generateLinkSearch } from "../helpers/generateLinks";
 import { limpiarNombre } from "../helpers/limpiarDatos";
+import https from 'https'
 
 //* Configuracion de Render.com
 axios.defaults.withCredentials = true;
+axios.defaults.httpsAgent = new https.Agent({ rejectUnauthorized: false });
 
 export const getRecentManga = async(req: Request, res: Response) => {
   try {
