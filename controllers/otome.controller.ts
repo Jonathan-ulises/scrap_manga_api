@@ -6,6 +6,8 @@ import { SearchLinkParams } from '../models/link.model';
 import { generateLinkSearch } from "../helpers/generateLinks";
 import { limpiarNombre } from "../helpers/limpiarDatos";
 
+//* Configuracion de Render.com
+axios.defaults.withCredentials = true;
 
 export const getRecentManga = async(req: Request, res: Response) => {
   const URL = process.env.URL_MANGA_OTOME!
