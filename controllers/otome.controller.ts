@@ -9,6 +9,8 @@ import { limpiarNombre } from "../helpers/limpiarDatos";
 
 export const getRecentManga = async(req: Request, res: Response) => {
   const URL = process.env.URL_MANGA_OTOME!
+  console.log(URL);
+  console.log(process.env.URL_MANGA_OTOME);
   const {status, data} = await axios.get(URL);
   
   if (status == 200) {
