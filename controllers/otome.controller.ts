@@ -48,6 +48,8 @@ export const getRecentManga = async(req: Request, res: Response) => {
     }
   } catch (error) {
     console.log(error)
+    // Envio de la pagina de error para poder visualizar correctamente
+    res.status(500).send(error.response.data)
   }
   
 }
