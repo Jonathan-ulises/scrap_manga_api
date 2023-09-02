@@ -8,8 +8,8 @@ import { limpiarNombre } from "../helpers/limpiarDatos";
 import http from 'http'
 
 //* Configuracion de Render.com
-axios.defaults.withCredentials = true;
-axios.defaults.httpsAgent = new http.Agent({keepAlive: true});
+// axios.defaults.withCredentials = true;
+// axios.defaults.httpsAgent = new http.Agent({keepAlive: true});
 
 export const getRecentManga = async(req: Request, res: Response) => {
   try {
