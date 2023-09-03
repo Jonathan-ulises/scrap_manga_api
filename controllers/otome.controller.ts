@@ -16,7 +16,14 @@ export const getRecentManga = async(req: Request, res: Response) => {
     const URL = process.env.URL_MANGA_OTOME!
     console.log(URL);
     console.log(process.env.URL_MANGA_OTOME);
-    const { status, data } = await axios.get(URL);
+    const { status, data } = await axios.get(URL, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+        'Content-Encoding': 'gzip, deflate, br',
+        'Content-Type': 'text/html; charset=UTF-8'
+      }
+    });
 
     if (status == 200) {
       const $ = cheerio.load(data);
