@@ -2,6 +2,7 @@ import express, { Application } from "express";
 
 // Routes
 import homeRoute from '../routes/otome.routes';
+import AxiosBase from "./axiosBase";
 
 class Server {
 
@@ -17,6 +18,7 @@ class Server {
 
         this.middleware();
         this.routes();
+        AxiosBase.createAxios();
     }
 
     middleware(): void {

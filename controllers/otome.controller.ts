@@ -5,26 +5,15 @@ import { Manga, MangaPage } from "../models/manga.model";
 import { SearchLinkParams } from '../models/link.model';
 import { generateLinkSearch } from "../helpers/generateLinks";
 import { limpiarNombre } from "../helpers/limpiarDatos";
-import http from 'http'
+import AxiosBase from "../models/axiosBase";
 
-//* Configuracion de Render.com
-// axios.defaults.withCredentials = true;
-// axios.defaults.httpsAgent = new http.Agent({keepAlive: true});
+
+// TODO: IMPORTANTE
+// TODO: IMPLEMENTAR CONEXIONES PROXY PARA EVITAR DETENCION POR CONEXIONES SIMULTANEAS MEDIANTE LA MISMA IP
 
 export const getRecentManga = async(req: Request, res: Response) => {
   try {
-    const URL = process.env.URL_MANGA_OTOME!
-    console.log(URL);
-    console.log(process.env.URL_MANGA_OTOME);
-    const { status, data } = await axios.get(URL, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
-        'Content-Encoding': 'gzip, deflate, br',
-        'Content-Type': 'text/html; charset=UTF-8'
-      }
-    });
-
+    const { status, data } = await AxiosBase.otome.get('/')
     if (status == 200) {
       const $ = cheerio.load(data);
       const containerManga = $('#top_weekly');
@@ -50,7 +39,7 @@ export const getRecentManga = async(req: Request, res: Response) => {
     } else {
       res.status(500).json({
         ok: false,
-        result: `Error con consulta en ${URL}`
+        result: `Error con consulta en ${AxiosBase.otome.getUri()}`
       })
     }
   } catch (error) {
@@ -62,10 +51,9 @@ export const getRecentManga = async(req: Request, res: Response) => {
 }
 
 export const getDetailManga = async(req: Request, res: Response) => {
-  const URL_BASE = process.env.URL_MANGA_OTOME!;
   const { mid } = req.body;
 
-  const { status, data } = await axios.get(`${URL_BASE}/contents/${mid}`);
+  const { status, data } = await AxiosBase.otome.get(`/contents/${mid}`);
   if (status === 200) {
     const $ = cheerio.load(data);
 
@@ -87,14 +75,12 @@ export const getDetailManga = async(req: Request, res: Response) => {
 }
 
 export const getMangaPages = async(req: Request, res: Response) => {
-  const URL_BASE = process.env.URL_MANGA_OTOME;
   const { mid, numPages } = req.body;
-
 
   const listPage: MangaPage[] = [];
 
   for(let i = 1; i <= numPages; i++) {
-    const { status, data } = await axios.get(`${URL_BASE}/reader/${mid}/paginated/${i}`);
+    const { status, data } = await AxiosBase.otome.get(`/reader/${mid}/paginated/${i}`);
     if (status === 200) {
       const $ = cheerio.load(data);
       const page: MangaPage = {
@@ -112,13 +98,10 @@ export const getMangaPages = async(req: Request, res: Response) => {
 }
 
 export const getMangaByGenres = async(req: Request, res: Response) => {
-  const URL_BASE = process.env.URL_MANGA_OTOME;
   const listManga: Array<Manga> = [];
   const paramsSearch: SearchLinkParams = req.body
 
-  const searchLink = `${URL_BASE}/section/hentai?${generateLinkSearch(paramsSearch)}`;
-  console.log(searchLink)
-  const { status, data } = await axios.get(searchLink);
+  const { status, data } = await AxiosBase.otome.get(`/section/hentai?${generateLinkSearch(paramsSearch)}`);
   if ( status === 200 ) {
     const $ = cheerio.load(data);
     $('.col-xs-6.col-sm-3.col-md-3.col-lg-2').each((_, el) => {
@@ -137,7 +120,6 @@ export const getMangaByGenres = async(req: Request, res: Response) => {
   res.status(200).json({
     ok: true,
     result: {
-      // searchLink,
       paramsSearch,
       listManga
     }
@@ -146,16 +128,12 @@ export const getMangaByGenres = async(req: Request, res: Response) => {
 }
 
 export const getChapterList = async(req: Request, res: Response) => {
-  const URL_BASE = process.env.URL_MANGA_OTOME!;
   const { mid } = req.body;
   if (mid) {
     let title: string = '';
-    let searchLink: string = '';
-    // let cantidadTotal = 0;
-    // let links = [];
 
     const listManga: Array<Manga> = [];
-    const { status, data } = await axios.get(`${URL_BASE}/contents/${mid}`);
+    const { status, data } = await AxiosBase.otome.get(`/contents/${mid}`);
     if (status === 200) {
       const $ = cheerio.load(data);
       title = $('div.panel-heading > h3').text();
@@ -172,9 +150,7 @@ export const getChapterList = async(req: Request, res: Response) => {
             resultpage: page,
           }
   
-          searchLink = `${URL_BASE}/section/hentai?${generateLinkSearch(paramsSearch)}`;
-          // links.push(searchLink);
-          const { status: statusSearch, data: dataSearch } = await axios.get(searchLink);
+          const { status: statusSearch, data: dataSearch } = await AxiosBase.otome.get(`/section/hentai?${generateLinkSearch(paramsSearch)}`);
           if (statusSearch === 200) {
             const $ = cheerio.load(dataSearch);
             $('.col-xs-6.col-sm-3.col-md-3.col-lg-2').each((_, el) => {
@@ -190,7 +166,6 @@ export const getChapterList = async(req: Request, res: Response) => {
             });
 
             cantidadManga = $('.col-xs-6.col-sm-3.col-md-3.col-lg-2').length
-            // cantidadTotal = cantidadTotal + cantidadManga;
             page++;
           } else {
             break;
@@ -206,9 +181,6 @@ export const getChapterList = async(req: Request, res: Response) => {
       ok: true,
       result: {
         titleSearch: title,
-        searchLink,
-        // links,
-        // cantidadTotal,
         listSize: listManga.length,
         listManga
       }
