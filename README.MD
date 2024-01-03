@@ -1,7 +1,7 @@
-# Ecchi Otoko API
+# ScrapManga API
 #### v0.0.1
 
-## API Rest to search Hentai Manga using Web Scrapping Libraries.
+## API Rest to search and read Manga using Web Scrapping Libraries.
 
 This project using Express and is develop with Typescript.
 
